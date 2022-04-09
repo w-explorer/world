@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.learn.world.redis.mapper.TaskMapper">
+
+    <insert id="insertTest">
+        insert into t_business_no values (
+            #{bus},#{no}
+        )
+    </insert>
+    <update id="updateTest">
+        update t_business_no set business_no = #{no}  where business_prefix = #{bus}
+    </update>
+    <select id="selectByBus" resultType="java.lang.Integer">
+        select business_no from t_business_no where business_prefix = #{bus}
+    </select>
+</mapper>

@@ -1,0 +1,15 @@
+spring:
+  #redis 连接信息配置
+  redis:
+    database: 0
+    host: 10.0.8.229
+    port: 57084
+    password: 123456
+    pool:
+      jedis:
+        pool:
+          max-idle: 200
+          max-active: 8
+          max-wait: -1
+          min-idle: 0
+    timeout: 1000
