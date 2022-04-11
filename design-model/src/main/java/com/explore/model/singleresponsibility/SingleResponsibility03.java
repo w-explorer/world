@@ -1,4 +1,4 @@
-package com.explore.model.m01_single_responsibility;
+package com.explore.model.singleresponsibility;
 
 /**
  * @author wencheng
