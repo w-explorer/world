@@ -39,7 +39,7 @@ public class Node {
      * 关联条件
      */
     @NotEmpty
-    private List<JoinInfo> joinInfo;
+    private List<JoinInfo> joinInfo = new ArrayList<>();
 
 
     private long y;

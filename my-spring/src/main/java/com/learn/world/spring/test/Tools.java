@@ -40,6 +40,10 @@ public final class Tools {
 		return Tools.isNull(fieldName) ? fieldCode : fieldName + "(" + fieldCode + ")";
 	}
 
+	public static boolean isNotNull(String str) {
+		return str != null && !"".equals(str.trim());
+	}
+
 	/**
 	 * <p>isNull.</p>
 	 *

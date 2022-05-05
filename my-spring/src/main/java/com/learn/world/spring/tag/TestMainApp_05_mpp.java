@@ -6,6 +6,7 @@ import com.learn.world.spring.tag.model.JoinInfo;
 import com.learn.world.spring.tag.model.JoinType;
 import com.learn.world.spring.tag.model.Node;
 import com.learn.world.spring.tag.model.TagField;
+import com.learn.world.spring.tag.utils.DataTypeUtil;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -14,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author wencheng
  * @create 2022/4/22 14:44
  */
-public class TestMainApp_03 {
+public class TestMainApp_05_mpp {
 
     /**
      *
@@ -60,84 +61,65 @@ public class TestMainApp_03 {
 
 
         Map<String, List<String>> tableMetaDataMap = new HashMap<>();
-        tableMetaDataMap.put("class",Arrays.asList("id","class_name","school_id","honour_id"));
-        tableMetaDataMap.put("student",Arrays.asList("id","name","class_id","project_id"));
-        tableMetaDataMap.put("school",Arrays.asList("id","school_name"));
-        tableMetaDataMap.put("honour",Arrays.asList("id","h_name"));
-        tableMetaDataMap.put("project",Arrays.asList("id","name"));
+        tableMetaDataMap.put("data01",Arrays.asList("my_id"));
+
+        String dbType = "guass176db";
+        String scheme = null;
 
 
         List<Node> treeData = new ArrayList<>();
+        String tableCodeTemp = "data01";
+        String fieldCode = "my_id";
 
         Node headNode = new Node();
         headNode.setId("1");
-        headNode.setTableCode("student");
+        headNode.setTableCode(tableCodeTemp);
 
 
         Node node1 = new Node();
         node1.setId("2");
-        node1.setTableCode("student");
+        node1.setTableCode(tableCodeTemp);
         node1.setParentId("1");
         node1.setType(JoinType.LEFT_JOIN);
-        JoinInfo joinInfo = new JoinInfo(new TagField("student","id"),new TagField("student","id"));
+        JoinInfo joinInfo = new JoinInfo(new TagField(tableCodeTemp,fieldCode),new TagField(tableCodeTemp,fieldCode));
         node1.setJoinInfo(Arrays.asList(joinInfo));
 
-//        Node node4 = new Node();
-//        node4.setId("5");
-//        node4.setTableCode("project");
-//        node4.setParentId("1");
-//        node4.setType(JoinType.RIGHT_JOIN);
-//        JoinInfo joinInfo4 = new JoinInfo(new TagField("student","project_id"),new TagField("project","id"));
-//        node4.setJoinInfo(Arrays.asList(joinInfo4));
 
         Node node2 = new Node();
         node2.setId("3");
-        node2.setTableCode("student");
+        node2.setTableCode(tableCodeTemp);
         node2.setParentId("2");
         node2.setType(JoinType.LEFT_JOIN);
-        JoinInfo joinInfo2 = new JoinInfo(new TagField("student","id"),new TagField("student","id"));
+        JoinInfo joinInfo2 = new JoinInfo(new TagField(tableCodeTemp,fieldCode),new TagField(tableCodeTemp,fieldCode));
         node2.setJoinInfo(Arrays.asList(joinInfo2));
 
 
         Node node3 = new Node();
         node3.setId("4");
-        node3.setTableCode("student");
+        node3.setTableCode(tableCodeTemp);
         node3.setParentId("2");
         node3.setType(JoinType.LEFT_JOIN);
-        JoinInfo joinInfo3 = new JoinInfo(new TagField("student","id"),new TagField("student","id"));
+        JoinInfo joinInfo3 = new JoinInfo(new TagField(tableCodeTemp,fieldCode),new TagField(tableCodeTemp,fieldCode));
         node3.setJoinInfo(Arrays.asList(joinInfo3));
 
         Node node4 = new Node();
         node4.setId("5");
-        node4.setTableCode("student");
+        node4.setTableCode(tableCodeTemp);
         node4.setParentId("2");
         node4.setType(JoinType.LEFT_JOIN);
-        JoinInfo joinInfo4 = new JoinInfo(new TagField("student","id"),new TagField("student","id"));
+        JoinInfo joinInfo4 = new JoinInfo(new TagField(tableCodeTemp,fieldCode),new TagField(tableCodeTemp,fieldCode));
         node4.setJoinInfo(Arrays.asList(joinInfo4));
-
-        Node node5 = new Node();
-        node5.setId("6");
-        node5.setTableCode("student");
-        node5.setParentId("4");
-        node5.setType(JoinType.LEFT_JOIN);
-        JoinInfo joinInfo5 = new JoinInfo(new TagField("student","id"),new TagField("student","id"));
-        node5.setJoinInfo(Arrays.asList(joinInfo5));
-
-        Node node6 = new Node();
-        node6.setId("7");
-        node6.setTableCode("student");
-        node6.setParentId("4");
-        node6.setType(JoinType.LEFT_JOIN);
-        JoinInfo joinInfo6 = new JoinInfo(new TagField("student","id"),new TagField("student","id"));
-        node6.setJoinInfo(Arrays.asList(joinInfo6));
 
         treeData.add(headNode);
         treeData.add(node1);
-        treeData.add(node2);
-        treeData.add(node3);
-        treeData.add(node4);
-        treeData.add(node5);
-        treeData.add(node6);
+//        treeData.add(node2);
+//        treeData.add(node3);
+
+
+        treeData.forEach(r->{
+            List<String> fields = tableMetaDataMap.get(r.getTableCode());
+            r.setFields(fields);
+        });
 
         //todo 唯一化 表中重复的所有字段
         HashMap<String, Integer> fieldTagMap = new HashMap<>();
@@ -153,8 +135,7 @@ public class TestMainApp_03 {
             }
 
 
-            List<String> fields = tableMetaDataMap.get(r.getTableCode());
-            r.setFields(fields);
+            List<String> fields = r.getFields();
 
             Map<String, String> aliasFieldMap = new HashMap<>();
             fields.forEach(f->{
@@ -168,6 +149,8 @@ public class TestMainApp_03 {
             });
             r.setAliasFieldMap(aliasFieldMap);
         });
+
+        wrapTableAndFiled(treeData,dbType,scheme);
 
 
 
@@ -210,7 +193,7 @@ public class TestMainApp_03 {
                     String finalTableCode = tableCode;
                     fields.forEach(f->{
                         if(Tools.isNotNull(aliasFieldMap.get(f))){
-                            buffer.append(String.format(" %s.%s as %s ,", finalTableCode,f,aliasFieldMap.get(f)));
+                            buffer.append(String.format(" %s.%s  %s ,", finalTableCode,f,aliasFieldMap.get(f)));
                         } else {
                             buffer.append(String.format(" %s.%s ,", finalTableCode,f));
                         }
@@ -232,26 +215,26 @@ public class TestMainApp_03 {
                         String tableCode = Tools.isNotNull(n.getTableAliasName())?n.getTableAliasName():n.getTableCode();
                         String tempTableCode = String.format("%s_tempTable", tableCode);
                         // left join (select ...) on ()
-                        buffer.append(String.format(" %s( %s )"+" as %s on (",n.getType().getCode(),n.getNodeSql(),tempTableCode));
+                        buffer.append(String.format(" %s( %s )"+"  %s on (",n.getType().getCode(),n.getNodeSql(),tempTableCode));
                         n.getJoinInfo().forEach(q->{
-                            String fieldCode = q.getDestField().getFieldCode();
-                            String desFieldCode = n.getAliasFieldMap().getOrDefault(fieldCode,fieldCode);
-                            buffer.append(" "+q.getSourceField().getTableCode()+"."+q.getSourceField().getFieldCode()+" = " + tempTableCode+"."+desFieldCode);
+                            String fieldCode1 = q.getDestField().getFieldCode();
+                            String desFieldCode = n.getAliasFieldMap().getOrDefault(fieldCode1,fieldCode1);
+                            buffer.append(" "+node.getTableCode()+"."+q.getSourceField().getFieldCode()+" = " + tempTableCode+"."+desFieldCode);
                         });
                         buffer.append(")");
                         count.getAndIncrement();
                     } else {
                         if(Tools.isNotNull(n.getTableAliasName())){
-                            // left join table as tempTable on (
-                            buffer.append(String.format(" %s %s as %s on (",n.getType().getCode(),n.getTableCode(),n.getTableAliasName()));
+                            // left join table  tempTable on (
+                            buffer.append(String.format(" %s %s  %s on (",n.getType().getCode(),n.getTableCode(),n.getTableAliasName()));
                             n.getJoinInfo().forEach(q->{
-                                buffer.append(" "+q.getSourceField().getTableCode()+"."+q.getSourceField().getFieldCode()+" = " + n.getTableAliasName()+"."+q.getDestField().getFieldCode());
+                                buffer.append(" "+node.getTableCode()+"."+q.getSourceField().getFieldCode()+" = " + n.getTableAliasName()+"."+q.getDestField().getFieldCode());
                             });
                         } else {
                             // left join table on (
                             buffer.append(String.format(" %s %s on (",n.getType().getCode(),n.getTableCode()));
                             n.getJoinInfo().forEach(q->{
-                                buffer.append(" "+q.getSourceField().getTableCode()+"."+q.getSourceField().getFieldCode()+" = " + n.getTableCode()+"."+q.getDestField().getFieldCode());
+                                buffer.append(" "+node.getTableCode()+"."+q.getSourceField().getFieldCode()+" = " + n.getTableCode()+"."+q.getDestField().getFieldCode());
                             });
                         }
                         buffer.append(")");
@@ -263,6 +246,37 @@ public class TestMainApp_03 {
             }
         }
 
+    }
+
+    public static void wrapTableAndFiled(List<Node> nodes,String dbType,String schema){
+        nodes.forEach(r->{
+            r.setTableCode(DataTypeUtil.getQuoteSchemaTable(dbType,schema,r.getTableCode()));
+
+            List<String> fields = new ArrayList<>();
+            r.getFields().forEach(f->{
+                fields.add(DataTypeUtil.quoteField(dbType,f));
+            });
+            r.setFields(fields);
+
+            Map<String,String> aliasFieldMap = new HashMap<>();
+            Map<String, String> aliasFieldTempMap = r.getAliasFieldMap();
+            aliasFieldTempMap.forEach((k,v)->{
+                aliasFieldMap.put(DataTypeUtil.quoteField(dbType,k),DataTypeUtil.quoteField(dbType,v));
+            });
+            r.setAliasFieldMap(aliasFieldMap);
+
+            r.getJoinInfo().forEach(info->{
+                TagField sourceField = info.getSourceField();
+                TagField destField = info.getDestField();
+                sourceField.setFieldCode(DataTypeUtil.quoteField(dbType,sourceField.getFieldCode()));
+                sourceField.setTableCode(DataTypeUtil.getQuoteSchemaTable(dbType,schema,sourceField.getTableCode()));
+
+                destField.setFieldCode(DataTypeUtil.quoteField(dbType,destField.getFieldCode()));
+                destField.setTableCode(DataTypeUtil.getQuoteSchemaTable(dbType,schema,destField.getTableCode()));
+            });
+
+
+        });
     }
 
     public static void cylTree(List<Node> nodes,List<Node> dataNode){
