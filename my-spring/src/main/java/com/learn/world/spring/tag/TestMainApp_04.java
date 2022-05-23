@@ -192,84 +192,99 @@ public class TestMainApp_04 {
 
         AtomicInteger count = new AtomicInteger();
         int size = dataNode.size();
-        for (int i = size-1; i >= 0; i--) {
-            Node node = dataNode.get(i);
-            List<Node> children = node.getChildren();
-            if(children!=null&&!children.isEmpty()){
-                StringBuffer buffer = new StringBuffer();
+        if(size == 1){
+            Node node = dataNode.get(0);
 
-                List<Node> hasChildrenNode = new ArrayList<>();
-                List<Node> withOutChildrenNode = new ArrayList<>();
-                withOutChildrenNode.add(node);
-                children.forEach(n->{
-                    if(Tools.isNotNull(n.getNodeSql())){
-                        hasChildrenNode.add(n);
-                    } else {
-                        withOutChildrenNode.add(n);
-                    }
-                });
-                buffer.append("select ");
-                withOutChildrenNode.forEach(n->{
-                    List<String> fields = n.getFields();
-                    Map<String, String> aliasFieldMap = n.getAliasFieldMap();
-                    String tableCode = Tools.isNotNull(n.getTableAliasName())?n.getTableAliasName():n.getTableCode();
-                    //父节点 字段查询  表名不需要别名处理
-                    if(n == node){
-                        tableCode = n.getTableCode();
-                    }
-                    String finalTableCode = tableCode;
-                    fields.forEach(f->{
-                        if(Tools.isNotNull(aliasFieldMap.get(f))){
-                            buffer.append(String.format(" %s.%s as %s ,", finalTableCode,f,aliasFieldMap.get(f)));
+            StringBuffer buffer = new StringBuffer();
+            buffer.append("select ");
+            String finalTableCode = node.getTableCode();
+            node.getFields().forEach(f->{
+                buffer.append(String.format(" %s.%s ,", finalTableCode,f));
+            });
+            buffer.deleteCharAt(buffer.length()-1);
+            buffer.append(" from "+node.getTableCode());
+            node.setNodeSql(buffer.toString());
+            System.out.println(buffer.toString());
+        } else {
+            for (int i = size-1; i >= 0; i--) {
+                Node node = dataNode.get(i);
+                List<Node> children = node.getChildren();
+                if(children!=null&&!children.isEmpty()){
+                    StringBuffer buffer = new StringBuffer();
+
+                    List<Node> hasChildrenNode = new ArrayList<>();
+                    List<Node> withOutChildrenNode = new ArrayList<>();
+                    withOutChildrenNode.add(node);
+                    children.forEach(n->{
+                        if(Tools.isNotNull(n.getNodeSql())){
+                            hasChildrenNode.add(n);
                         } else {
-                            buffer.append(String.format(" %s.%s ,", finalTableCode,f));
+                            withOutChildrenNode.add(n);
                         }
                     });
-                });
-
-                hasChildrenNode.forEach(n->{
-                    String tableCode = Tools.isNotNull(n.getTableAliasName())?n.getTableAliasName():n.getTableCode();
-                    buffer.append(String.format(" %s.* ,",String.format("%s_tempTable",tableCode)));
-                });
-
-                buffer.deleteCharAt(buffer.length()-1);
-
-                buffer.append(" from "+node.getTableCode());
-
-                children.forEach(n->{
-                    if(Tools.isNotNull(n.getNodeSql())){
-
+                    buffer.append("select ");
+                    withOutChildrenNode.forEach(n->{
+                        List<String> fields = n.getFields();
+                        Map<String, String> aliasFieldMap = n.getAliasFieldMap();
                         String tableCode = Tools.isNotNull(n.getTableAliasName())?n.getTableAliasName():n.getTableCode();
-                        String tempTableCode = String.format("%s_tempTable", tableCode);
-                        // left join (select ...) on ()
-                        buffer.append(String.format(" %s( %s )"+" as %s on (",n.getType().getCode(),n.getNodeSql(),tempTableCode));
-                        n.getJoinInfo().forEach(q->{
-                            String fieldCode = q.getDestField().getFieldCode();
-                            String desFieldCode = n.getAliasFieldMap().getOrDefault(fieldCode,fieldCode);
-                            buffer.append(" "+node.getTableCode()+"."+q.getSourceField().getFieldCode()+" = " + tempTableCode+"."+desFieldCode);
-                        });
-                        buffer.append(")");
-                        count.getAndIncrement();
-                    } else {
-                        if(Tools.isNotNull(n.getTableAliasName())){
-                            // left join table as tempTable on (
-                            buffer.append(String.format(" %s %s as %s on (",n.getType().getCode(),n.getTableCode(),n.getTableAliasName()));
-                            n.getJoinInfo().forEach(q->{
-                                buffer.append(" "+node.getTableCode()+"."+q.getSourceField().getFieldCode()+" = " + n.getTableAliasName()+"."+q.getDestField().getFieldCode());
-                            });
-                        } else {
-                            // left join table on (
-                            buffer.append(String.format(" %s %s on (",n.getType().getCode(),n.getTableCode()));
-                            n.getJoinInfo().forEach(q->{
-                                buffer.append(" "+node.getTableCode()+"."+q.getSourceField().getFieldCode()+" = " + n.getTableCode()+"."+q.getDestField().getFieldCode());
-                            });
+                        //父节点 字段查询  表名不需要别名处理
+                        if(n == node){
+                            tableCode = n.getTableCode();
                         }
-                        buffer.append(")");
-                    }
+                        String finalTableCode = tableCode;
+                        fields.forEach(f->{
+                            if(Tools.isNotNull(aliasFieldMap.get(f))){
+                                buffer.append(String.format(" %s.%s as %s ,", finalTableCode,f,aliasFieldMap.get(f)));
+                            } else {
+                                buffer.append(String.format(" %s.%s ,", finalTableCode,f));
+                            }
+                        });
+                    });
 
-                });
-                node.setNodeSql(buffer.toString());
-                System.out.println(buffer.toString());
+                    hasChildrenNode.forEach(n->{
+                        String tableCode = Tools.isNotNull(n.getTableAliasName())?n.getTableAliasName():n.getTableCode();
+                        buffer.append(String.format(" %s.* ,",String.format("%s_tempTable",tableCode)));
+                    });
+
+                    buffer.deleteCharAt(buffer.length()-1);
+
+                    buffer.append(" from "+node.getTableCode());
+
+                    children.forEach(n->{
+                        if(Tools.isNotNull(n.getNodeSql())){
+
+                            String tableCode = Tools.isNotNull(n.getTableAliasName())?n.getTableAliasName():n.getTableCode();
+                            String tempTableCode = String.format("%s_tempTable", tableCode);
+                            // left join (select ...) on ()
+                            buffer.append(String.format(" %s( %s )"+" as %s on (",n.getType().getCode(),n.getNodeSql(),tempTableCode));
+                            n.getJoinInfo().forEach(q->{
+                                String fieldCode = q.getDestField().getFieldCode();
+                                String desFieldCode = n.getAliasFieldMap().getOrDefault(fieldCode,fieldCode);
+                                buffer.append(" "+node.getTableCode()+"."+q.getSourceField().getFieldCode()+" = " + tempTableCode+"."+desFieldCode);
+                            });
+                            buffer.append(")");
+                            count.getAndIncrement();
+                        } else {
+                            if(Tools.isNotNull(n.getTableAliasName())){
+                                // left join table as tempTable on (
+                                buffer.append(String.format(" %s %s as %s on (",n.getType().getCode(),n.getTableCode(),n.getTableAliasName()));
+                                n.getJoinInfo().forEach(q->{
+                                    buffer.append(" "+node.getTableCode()+"."+q.getSourceField().getFieldCode()+" = " + n.getTableAliasName()+"."+q.getDestField().getFieldCode());
+                                });
+                            } else {
+                                // left join table on (
+                                buffer.append(String.format(" %s %s on (",n.getType().getCode(),n.getTableCode()));
+                                n.getJoinInfo().forEach(q->{
+                                    buffer.append(" "+node.getTableCode()+"."+q.getSourceField().getFieldCode()+" = " + n.getTableCode()+"."+q.getDestField().getFieldCode());
+                                });
+                            }
+                            buffer.append(")");
+                        }
+
+                    });
+                    node.setNodeSql(buffer.toString());
+                    System.out.println(buffer.toString());
+                }
             }
         }
 
