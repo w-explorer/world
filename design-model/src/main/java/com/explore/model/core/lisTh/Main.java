@@ -1,4 +1,4 @@
-package com.explore.model.lisTh;
+package com.explore.model.core.lisTh;
 
 /**
  * @author wencheng

@@ -1,4 +1,4 @@
-package com.explore.model.segregation;
+package com.explore.model.core.segregation;
 
 /**
  * @author wencheng

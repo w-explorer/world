@@ -1,4 +1,4 @@
-package com.explore.model.inversion.dependencyTransmit.interfac;
+package com.explore.model.core.inversion.dependencyTransmit.interfac;
 
 public class Interface {
 

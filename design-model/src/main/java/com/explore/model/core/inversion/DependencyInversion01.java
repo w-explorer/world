@@ -1,4 +1,4 @@
-package com.explore.model.inversion;
+package com.explore.model.core.inversion;
 
 /**
  * @author wencheng

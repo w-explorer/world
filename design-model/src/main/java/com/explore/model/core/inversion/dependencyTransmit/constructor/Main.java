@@ -1,4 +1,4 @@
-package com.explore.model.inversion.dependencyTransmit.constructor;
+package com.explore.model.core.inversion.dependencyTransmit.constructor;
 
 public class Main {
 
