@@ -133,12 +133,12 @@ public class TestMainApp_04 {
         node6.setJoinInfo(Arrays.asList(joinInfo6));
 
         treeData.add(headNode);
-        treeData.add(node1);
-        treeData.add(node2);
-        treeData.add(node3);
-        treeData.add(node4);
-        treeData.add(node5);
-        treeData.add(node6);
+//        treeData.add(node1);
+//        treeData.add(node2);
+//        treeData.add(node3);
+//        treeData.add(node4);
+//        treeData.add(node5);
+//        treeData.add(node6);
 
         String dbType = "mysql";
         String scheme = "mysql";

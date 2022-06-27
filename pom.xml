@@ -12,6 +12,7 @@
         <module>design-model</module>
         <module>javavc</module>
         <module>debug</module>
+        <module>rocket-mq-learn</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
