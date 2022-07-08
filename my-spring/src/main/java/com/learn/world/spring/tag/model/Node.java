@@ -2,7 +2,6 @@ package com.learn.world.spring.tag.model;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +37,6 @@ public class Node {
     /**
      * 关联条件
      */
-    @NotEmpty
     private List<JoinInfo> joinInfo = new ArrayList<>();
 
 

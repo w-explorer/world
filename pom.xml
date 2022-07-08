@@ -13,6 +13,7 @@
         <module>javavc</module>
         <module>debug</module>
         <module>rocket-mq-learn</module>
+        <module>world-common</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
