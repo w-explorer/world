@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.explore.model.biz.cha20watch</OriginalElement>
+  <nodes>
+    <node x="248.0" y="0.0">com.explore.model.biz.cha20watch.IUser</node>
+    <node x="9.5" y="0.0">com.explore.model.biz.cha20watch.Manager</node>
+    <node x="0.0" y="150.0">com.explore.model.biz.cha20watch.ParkingManager</node>
+    <node x="248.0" y="104.0">com.explore.model.biz.cha20watch.User1</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.explore.model.biz.cha20watch.User1" target="com.explore.model.biz.cha20watch.IUser">
+      <point x="0.0" y="-96.0" />
+      <point x="0.0" y="27.0" />
+    </edge>
+    <edge source="com.explore.model.biz.cha20watch.ParkingManager" target="com.explore.model.biz.cha20watch.Manager">
+      <point x="0.0" y="-142.0" />
+      <point x="0.0" y="50.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.873767258382643" x="107.0" y="299.5" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
