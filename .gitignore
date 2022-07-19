@@ -32,4 +32,4 @@ build/
 ### VS Code ###
 .vscode/
 
-my-spring/src/main/java/com/learn/world/spring/test
+my-spring/src/main/java/com/learn/world/spring/test/
