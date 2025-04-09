@@ -14,6 +14,7 @@
         <module>debug</module>
         <module>rocket-mq-learn</module>
         <module>world-common</module>
+        <module>io-mq</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

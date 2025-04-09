@@ -42,7 +42,7 @@ import java.util.HashMap;
  * get: hash碰撞 意思就是角标是否一样。可以通过hashCode的异或运算来降低碰撞的概率。异或运算可以猜才能打到1和0的比例是1:1平衡状态。
  * 异或运算让结果的随机性更大。
  *
- * hashCode 一样，通过key的quals方法来对比找链路中的位置。
+ * hashCode 一样，通过key的equals方法来对比找链路中的位置。
  * public final boolean equals(Object o) {
  *             if (o == this)
  *                 return true;
